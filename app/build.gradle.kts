@@ -15,19 +15,24 @@ android {
         versionName = "1.0.0"
     }
 
-    signingConfigs {
-        create("release") {
-            storeFile = file("${rootDir}/release.keystore")
-            storePassword = "openbms123"
-            keyAlias = "openbms"
-            keyPassword = "openbms123"
+    val keystoreFile = file("${rootDir}/release.keystore")
+    if (keystoreFile.exists()) {
+        signingConfigs {
+            create("release") {
+                storeFile = keystoreFile
+                storePassword = "openbms123"
+                keyAlias = "openbms"
+                keyPassword = "openbms123"
+            }
         }
     }
 
     buildTypes {
         release {
             isMinifyEnabled = false
-            signingConfig = signingConfigs.getByName("release")
+            if (keystoreFile.exists()) {
+                signingConfig = signingConfigs.getByName("release")
+            }
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
